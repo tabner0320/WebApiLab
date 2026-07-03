@@ -27,9 +27,7 @@ app.UseHttpsRedirection();
 
 app.MapGet("/people", () => jsonData)
     .WithName("GetPeople")
-    .WithOpenApi()
     .Produces<List<Person>>(StatusCodes.Status200OK);
-
 app.Run();
 
 
