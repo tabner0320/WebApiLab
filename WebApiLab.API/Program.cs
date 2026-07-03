@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -28,6 +29,8 @@ app.UseHttpsRedirection();
 app.MapGet("/people", () => jsonData)
     .WithName("GetPeople")
     .Produces<List<Person>>(StatusCodes.Status200OK);
+
+app.MapControllers();
 app.Run();
 
 
