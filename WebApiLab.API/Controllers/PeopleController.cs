@@ -27,4 +27,17 @@ public class PeopleController : ControllerBase
     {
         return Ok(People);
     }
+
+    [HttpGet("{id}")]
+    public IActionResult GetPerson(string id)
+    {
+        Person? person = People.FirstOrDefault(p => p.Id == id);
+
+        if (person == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(person);
+    }
 }

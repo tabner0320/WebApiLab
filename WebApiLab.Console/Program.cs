@@ -5,28 +5,28 @@ HttpClient client = new HttpClient();
 
 client.BaseAddress = new Uri("http://localhost:5267");
 
-HttpResponseMessage response = await client.GetAsync("/api/People");
+// Lookup one person by ID
+HttpResponseMessage response =
+    await client.GetAsync("/api/People/V59OF92YF627HFY0");
 
 if (response.IsSuccessStatusCode)
 {
-    string content = await response.Content.ReadAsStringAsync();
+    string json = await response.Content.ReadAsStringAsync();
 
-    var people = JsonSerializer.Deserialize<List<Person>>(
-        content,
-        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+    Person? person = JsonSerializer.Deserialize<Person>(
+        json,
+        new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
 
-    foreach (Person person in people!)
-    {
-        Console.WriteLine($"Name: {person.Name}");
-        Console.WriteLine($"Language: {person.Language}");
-        Console.WriteLine($"ID: {person.Id}");
-        Console.WriteLine($"Bio: {person.Bio}");
-        Console.WriteLine($"Version: {person.Version}");
-        Console.WriteLine("-------------------------");
-    }
+    Console.WriteLine($"Name: {person?.Name}");
+    Console.WriteLine($"Language: {person?.Language}");
+    Console.WriteLine($"ID: {person?.Id}");
+    Console.WriteLine($"Bio: {person?.Bio}");
+    Console.WriteLine($"Version: {person?.Version}");
 }
 else
 {
     Console.WriteLine($"Error: {response.StatusCode}");
-    Console.WriteLine(await response.Content.ReadAsStringAsync());
 }
