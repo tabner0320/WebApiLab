@@ -1,39 +1,39 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using WebApiLab.API.Models;
 
 namespace WebApiLab.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class PeopleController : ControllerBase
 {
-    private List<Person> People { get; set; } = [];
+    private readonly List<Person> people;
 
     public PeopleController()
     {
         string jsonFile = System.IO.File.ReadAllText("./Resources/64KB.json");
 
-        People = JsonSerializer.Deserialize<List<Person>>(
+        people = System.Text.Json.JsonSerializer.Deserialize<List<Person>>(
             jsonFile,
-            new JsonSerializerOptions
+            new System.Text.Json.JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
-            }) ?? throw new Exception("No people data found.");
+            }
+        ) ?? new List<Person>();
     }
 
     [HttpGet]
-    public IActionResult GetPeople()
+    public ActionResult<List<Person>> GetPeople()
     {
-        return Ok(People);
+        return Ok(people);
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetPerson(string id)
+    public ActionResult<Person> GetPerson(string id)
     {
-        Person? person = People.FirstOrDefault(p => p.Id == id);
+        Person? person = people.FirstOrDefault(p => p.Id == id);
 
-        if (person == null)
+        if (person is null)
         {
             return NotFound();
         }
